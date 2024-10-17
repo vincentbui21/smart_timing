@@ -1,6 +1,6 @@
 import socket,sys
 
-    # get the hostname
+# get the hostname
 host = '212.90.75.100'
 port = 8080  # initiate port no above 1024
 

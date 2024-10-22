@@ -1,76 +1,79 @@
 import streamlit as st
-import time
-import asyncio
-import socket,sys
+import time, sys
 import threading
+import server_code
+
+st.set_page_config(
+    page_title="Traning",
+    page_icon="🏃‍♂️",
+)
 
 if 'title' not in st.session_state:
     st.session_state.title = '00:00:00:00'
-if 'conn' not in st.session_state:
+if 'conn' not in st.session_state: #Establish socket connection
     with st.spinner('Waiting for connection from ESP32...'):
-        host = '212.90.75.100'
-        port = 8080  # initiate port no above 1024
-
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # get instance
-        sockaddr = socket.getaddrinfo(host, port)[0][-1]
-        print(sockaddr)
-        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server_socket.bind((host, port))  # bind host address and port together
-
-        # configure how many client the server can listen simultaneously
-        server_socket.listen(5)
-        conn, address = server_socket.accept()  # accept new connection
-
+        conn = server_code.set_up_server()
         st.session_state.conn = conn
-    st.success('Socket connection established!')
+    st.success('Socket establish successfully') #This will be return no matter the result 
+if 'runner' not in st.session_state:
+    st.session_state.runner = 'None'
+
+
 
 stop_event = threading.Event()
 
+def start(button_placeholder):
+    server_code.reset_stop_watch()
 
-def player_detected(conn):
-    while True:
-        # receive data stream. it won't accept data packet greater than 1024 bytes
-        data = conn.recv(1024).decode()
-        if not data:
-            # if data is not received break
-            break
-        elif str(data) == 'True':
-            stop_event.set()
-        elif str(data)=='False':
-            pass
+    button_placeholder.button('Running', disabled = True)
 
-
-def start():
-    for i in range (1,4):
-        st.session_state.title = 4-i
+    for i in range (3,0,-1):
+        st.session_state.title = i
         title_placeholder.title(st.session_state.title)
         time.sleep(1)
     
-    myThread = threading.Thread(target=player_detected, daemon=True, args=(st.session_state.conn,))
-    myThread.start()
-
-    msecond = 0
-    second = 0    
-    minute = 0    
-    hour = 0
-    while not stop_event.is_set():       
-        time.sleep(1/100)        
-        msecond+=1    
-        if msecond == 99:
-            msecond = 0
-            second +=1             
-        elif second == 60:    
-            second = 0    
-            minute+=1    
-        elif minute == 60:    
-            minute = 0    
-            hour+=1
+    player_detect_Thread = threading.Thread(target=server_code.player_detected, daemon=True, args=(st.session_state.conn, stop_event, ))
+    player_detect_Thread.start()
+    
+    while not stop_event.is_set():
+        msecond, second, minute,hour = server_code.stop_watch()
         title_placeholder.title(f'{hour:02} : {minute:02} : {second:02} : {msecond:02}')
-        
 
+    st.session_state.title='00:00:00:00' #reset cache to 0
+
+#---------------main UI code ---------------------
 st.title('TimeStamp')
+option = st.selectbox(
+"Runner session",
+("VINCENT", "ERIC", "KELVIN"),
+index=None,
+placeholder ="Select runner here"
+)
+
 title_placeholder = st.empty()
 title_placeholder.title(st.session_state.title)
 
-if st.button('Start'):
-    start()
+button_placeholder = st.empty()
+
+if button_placeholder.button('Start'):
+    start(button_placeholder)
+
+    msecond, second, minute,hour = server_code.current_time_stamp()
+    title_placeholder.title(f'{hour:02} : {minute:02} : {second:02} : {msecond:02}')
+
+    timestamp = f'{hour:02} : {minute:02} : {second:02} : {msecond:02}'
+
+    col1, col2 = button_placeholder.columns(2)
+    if col1.button('Save this record',type='primary'):
+        st.session_state.ws_conn.update(spreadsheet=st.session_state.ws_url, worksheet= st.session_state.ws_id.get('vincent_ws_id'), data=timestamp)
+    if col2.button('delete this record', type='primary'):
+        pass
+
+
+
+if option == 'VINCENT':
+    st.session_state.runner = option
+elif option =='ERIC':
+    st.session_state.runner = option
+elif option =='KELVIN':
+    st.session_state.runner = option

@@ -10,13 +10,11 @@ st.set_page_config(
     page_icon="🏃‍♂️",
 )
 
-
-
 if 'runner' not in st.session_state:
     st.session_state.runner = 'None'
 if 'Connection_List' not in st.session_state:
     with st.spinner('Waiting for esp32 connections'):
-        st.session_state.Connection_List = connection.start(1)
+        st.session_state.Connection_List = connection.start(2)
 
 stop_event = threading.Event()
 conn_error_event = threading.Event()

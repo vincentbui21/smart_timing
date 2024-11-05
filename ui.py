@@ -10,6 +10,8 @@ st.set_page_config(
     page_icon="🏃‍♂️",
 )
 
+
+
 if 'runner' not in st.session_state:
     st.session_state.runner = 'None'
 if 'Connection_List' not in st.session_state:
@@ -18,6 +20,7 @@ if 'Connection_List' not in st.session_state:
 
 stop_event = threading.Event()
 conn_error_event = threading.Event()
+new_stop_watch = logic.stop_watch()
 
 def saving_data(button_placeholder, timestamp:str):
     from pages.database import update_new_timestamp
@@ -28,16 +31,16 @@ def saving_data(button_placeholder, timestamp:str):
         pass
         
 def start():
-    logic.reset_stop_watch()
+    new_stop_watch.reset()
     for i in range (3,0,-1):
-        title_placeholder.title(i)
+        title_placeholder.title(f':red[{i}]')
         time.sleep(1)
     
     logic_thread = threading.Thread(target=logic.main_logic, args=(stop_event, conn_error_event, st.session_state.Connection_List,), daemon=True)
     logic_thread.start()
 
     while not stop_event.is_set():
-        msecond, second, minute,hour = logic.run_stop_watch()
+        msecond, second, minute,hour = new_stop_watch.run(string_format=False)
         title_placeholder.title(f'{hour:02} : {minute:02} : {second:02} : {msecond:02}')
 
 #---------------main UI code ---------------------
@@ -68,7 +71,7 @@ if button_start:
             st.warning("Please recheck all the ESP32 then delete page's cache before trying again")
             button_placeholder.button('OK',type='primary')
         else:
-            saving_data(button_placeholder,timestamp = logic.current_time_stamp(True))
+            saving_data(button_placeholder,timestamp = new_stop_watch.get_current_time_stamp(string_format=True))
 
 if runner_option != None:
-    st.toast(f'New runner selected: f{runner_option}')
+    st.toast(f'New runner selected: {runner_option}')

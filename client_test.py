@@ -1,7 +1,7 @@
 import socket
 
-IP = socket.gethostbyname(socket.gethostname())
-#IP = '62.113.183.70'
+#IP = socket.gethostbyname(socket.gethostname())
+IP = '62.113.187.73'
 PORT = 8080
 ADDR = (IP, PORT)
 SIZE = 1024

@@ -21,58 +21,44 @@ def main_logic(stop_event: threading.Event, connection_error: threading.Event, c
                 connection_error.set()
         stop_event.set()
 
-msecond = 0
-second = 0    
-minute = 0    
-hour = 0
+class stop_watch():
+    def __init__(self):
+        self.msecond = 0
+        self.second = 0
+        self.minute = 0
+        self.hour = 0
+    
+    def reset(self):
+        self.msecond = 0
+        self.second = 0
+        self.minute = 0
+        self.hour = 0
 
-def run_stop_watch():
-    '''
-    This functions run the stop-watch then return back the stop-watch digits: milisecond, second, minute, hour
-    '''
-    global msecond
-    global second
-    global minute
-    global hour 
+    def run(self, string_format : bool):
+        time.sleep(1/100)
+        self.msecond+=1    
+        if self.msecond == 99:
+            self.msecond = 0
+            self.second +=1             
+        elif self.second == 60:    
+            self.second = 0    
+            self.minute+=1    
+        elif self.minute == 60:    
+            self.minute = 0    
+            self.hour+=1
+        
+        if string_format:
+            return f'{self.hour:02}:{self.minute:02}:{self.second:02}:{self.msecond:02}'
+        else:
+            return self.msecond, self.second, self.minute, self.hour
 
-    time.sleep(1/100)
-    msecond+=1    
-    if msecond == 99:
-        msecond = 0
-        second +=1             
-    elif second == 60:    
-        second = 0    
-        minute+=1    
-    elif minute == 60:    
-        minute = 0    
-        hour+=1
-    return msecond,second,minute,hour
-
-def reset_stop_watch():
-    '''This function delete the cache of the previous stopwatch. This functions should be called before running a new one'''
-    global msecond
-    global second
-    global minute
-    global hour
-
-    msecond = 0
-    second = 0    
-    minute = 0    
-    hour = 0
-
-def current_time_stamp(string_format:bool):
-    '''This function return current digits of stop-watch: msecond, second, minute, hour. The "string-format parameter is a boolean type, if it's set to True, then it will return a string, if not then a tuple is of int digits "'''
-    global msecond
-    global second
-    global minute
-    global hour
-    if string_format:
-        return f'{hour:02}:{minute:02}:{second:02}:{msecond:02}'
-    else:
-       return msecond, second, minute, hour 
-
-
+    def get_current_time_stamp(self, string_format:bool):
+        if string_format:
+            return f'{self.hour:02}:{self.minute:02}:{self.second:02}:{self.msecond:02}'
+        else:
+            return self.msecond, self.second, self.minute, self.hour
+    
 if __name__ == '__main__':
+    new_stop_watch = stop_watch()
     while True:
-        run_stop_watch()
-        print(current_time_stamp(string_format=True))
+        print(new_stop_watch.run(string_format=True))

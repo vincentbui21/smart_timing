@@ -2,8 +2,8 @@ import socket
 import threading
 import random
 
-IP = socket.gethostbyname(socket.gethostname())
-#IP = '212.149.171.88'
+#IP = socket.gethostbyname(socket.gethostname())
+IP = '62.113.187.73'
 PORT = 8080
 ADDR = (IP, PORT)
 SIZE = 1024
@@ -28,7 +28,7 @@ def handle_client(conn:socket.socket) -> None:
         else:
             pass  
 
-def stop(conn):
+def stop(conn:socket.socket):
     msg = DISCONNECT_MSG
     conn.send(msg.encode(FORMAT))
     conn.close()

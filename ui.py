@@ -4,30 +4,51 @@ import threading
 import connection
 import logic
 import sys
+from pages import database_mysql
 
 st.set_page_config(
     page_title="Traning",
     page_icon="🏃‍♂️",
 )
 
-if 'runner' not in st.session_state:
-    st.session_state.runner = 'None'
+if 'conn_est_bool' not in st.session_state:
+    st.session_state.conn_est_bool = False
 if 'Connection_List' not in st.session_state:
-    with st.spinner('Waiting for esp32 connections'):
-        st.session_state.Connection_List = connection.start(2)
+    def func(option):
+        if option == None:
+            st.toast('Please choose a number!')
+            return
+
+        holder2.button(f'Please wait! Seeking for {option} connections', disabled=True)
+        with st.spinner('Waiting for esp32 connections'):
+            st.session_state.Connection_List = connection.start(option)
+        st.session_state.conn_est_bool = True
+    
+
+    option = st.selectbox(
+    'How many connections do you want to set up?',
+    (1,2,3),
+    index=None,
+    )
+
+    holder2 = st.empty()
+    holder2.button('OK', on_click=func, args=(option,))
+
+    while not st.session_state.conn_est_bool:
+        pass
 
 stop_event = threading.Event()
 conn_error_event = threading.Event()
 new_stop_watch = logic.stop_watch()
+runner_info = database_mysql.get_runner_name(devide=True)
 
-def saving_data(button_placeholder, timestamp:str):
-    from pages.database import update_new_timestamp
-
+def saving_data(button_placeholder, timestamp:str, runner:int):
     col1, col2 = button_placeholder.columns(2)
-    col1.button('Save this record', on_click= update_new_timestamp(timestamp=timestamp, runner=runner_option))
-    if col2.button('Delete this record', type='secondary'):
-        pass
-        
+    with col1:
+        btn1 = st.button('Save this record', type='secondary', on_click=database_mysql.add_new_timestamp, args=(timestamp, runner))
+    with col2:
+        btn2 = st.button('Delete this record', type='secondary')
+
 def start():
     new_stop_watch.reset()
     for i in range (3,0,-1):
@@ -46,7 +67,7 @@ st.title('TimeStamp')
 
 runner_option = st.selectbox(
             'Choose runner name to save this new timestamp',
-            ('VINCENT', 'ERIC', 'KELVIN'),
+            runner_info[2],
             index= None,
         )
 
@@ -69,7 +90,14 @@ if button_start:
             st.warning("Please recheck all the ESP32 then delete page's cache before trying again")
             button_placeholder.button('OK',type='primary')
         else:
-            saving_data(button_placeholder,timestamp = new_stop_watch.get_current_time_stamp(string_format=True))
+            runner_id = int(runner_option[-3:])
 
+            print(type(new_stop_watch.get_current_time_stamp(string_format=True)))
+            print(new_stop_watch.get_current_time_stamp(string_format=True))
+            print(type(runner_id))
+            print(runner_id)
+
+            saving_data(button_placeholder,timestamp = new_stop_watch.get_current_time_stamp(string_format=True), runner = runner_id)
+            
 if runner_option != None:
     st.toast(f'New runner selected: {runner_option}')

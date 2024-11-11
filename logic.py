@@ -3,6 +3,7 @@ import random
 import time
 import threading
 import socket
+import asyncio
 
 def main_logic(stop_event: threading.Event, connection_error: threading.Event, conn_list:list[socket.socket]):
     """

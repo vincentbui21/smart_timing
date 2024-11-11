@@ -3,7 +3,7 @@ import threading
 import random
 
 IP = socket.gethostbyname(socket.gethostname())
-#IP = '192.168.63.135'
+# IP = '87.95.161.231'
 PORT = 8080
 ADDR = (IP, PORT)
 SIZE = 1024

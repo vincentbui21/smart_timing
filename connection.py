@@ -2,8 +2,9 @@ import socket
 import threading
 import random
 
-IP = socket.gethostbyname(socket.gethostname())
+# IP = socket.gethostbyname(socket.gethostname())
 # IP = '87.95.161.231'
+IP = 'localhost'
 PORT = 8080
 ADDR = (IP, PORT)
 SIZE = 1024
@@ -22,7 +23,7 @@ def handle_client(conn:socket.socket) -> None:
         msg = conn.recv(SIZE).decode(FORMAT)
         if msg == 'True':
             print(f'From client: {msg}')
-            msg = 'stop'
+            msg = 'Stop'
             conn.send(msg.encode(FORMAT))
             connected = False
         else:
@@ -33,7 +34,7 @@ def stop(conn:socket.socket):
     conn.send(msg.encode(FORMAT))
     conn.close()
 
-def start(max_conn=2) -> dict:
+def start(max_conn=2):
     """ Open a socket connection, return that connection.
     The 'max_conn' parameter is by default 2. It is the number of connection the server will listen to.
     """
@@ -48,7 +49,8 @@ def start(max_conn=2) -> dict:
         print(f'New connection from: {addr}')
         CURR_CONN+=1
         CONN_LIST.update({CURR_CONN:conn})
-    return CONN_LIST
+        yield {CURR_CONN:conn}
+    # return CONN_LIST
 
 def main(stop_event: threading.Event = None) -> None:
     global temp

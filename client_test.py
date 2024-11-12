@@ -1,8 +1,8 @@
 import socket
 
-IP = socket.gethostbyname(socket.gethostname())
+#IP = socket.gethostbyname(socket.gethostname())
 #IP = '192.168.63.135'
-PORT = 8080
+PORT = 17736
 ADDR = (IP, PORT)
 SIZE = 1024
 FORMAT = "utf-8"
@@ -17,10 +17,10 @@ def main():
     while connected:
         msg = client.recv(SIZE).decode(FORMAT)
         print(f"[SERVER] {msg}")
-
+        
         if msg == DISCONNECT_MSG:
             connected = False
-        else:
+        elif msg == 'Start':
             msg = input("> ")
             client.send(msg.encode(FORMAT))
 

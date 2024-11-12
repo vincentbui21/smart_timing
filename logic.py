@@ -5,7 +5,7 @@ import threading
 import socket
 import asyncio
 
-def main_logic(stop_event: threading.Event, connection_error: threading.Event, conn_list:list[socket.socket]):
+def main_logic(stop_event: threading.Event, connection_error: threading.Event, conn_list:list[socket.socket], pause_queue:list):
     """
     This functions randomly suffle the list of all the connections made, then send the command to the client and wait for data return before moving on the the next client 
     """
@@ -17,6 +17,7 @@ def main_logic(stop_event: threading.Event, connection_error: threading.Event, c
         for each_conn in temp:
             try:
                 connection.handle_client(conn_list.get(each_conn))
+                pause_queue.append(True)
             except (ConnectionResetError, ConnectionAbortedError, ConnectionError):
                 print('Connection error')
                 connection_error.set()

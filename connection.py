@@ -3,7 +3,7 @@ import threading
 import random
 
 # IP = socket.gethostbyname(socket.gethostname())
-# IP = '87.95.161.231'
+# IP = '10.214.33.15'
 IP = 'localhost'
 PORT = 8080
 ADDR = (IP, PORT)
@@ -66,7 +66,8 @@ def main(stop_event: threading.Event = None) -> None:
     print('Done')
 
 if __name__ == "__main__":
-    start()
+    a = start()
+    next(a)
     while True:
         main()
         continueq = input('Do you want to continue: ')

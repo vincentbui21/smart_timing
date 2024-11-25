@@ -110,6 +110,7 @@ if button_start:
         if conn_error_event.is_set():
             st.error('Connection Error - Stop-watch stopped')
             st.warning("Please recheck all the ESP32 then delete page's cache before trying again")
+            st.session_state.conn_est_bool = False
             button_placeholder.button('OK',type='primary')
         else:
             runner_id = int(runner_option[-3:])

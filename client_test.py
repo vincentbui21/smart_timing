@@ -1,9 +1,9 @@
 import socket
 
 # IP = socket.gethostbyname(socket.gethostname())
-#IP = '192.168.63.135'
-IP = '6.tcp.eu.ngrok.io'
-PORT = 10012
+IP = 'localhost'
+# IP = '6.tcp.eu.ngrok.io'
+PORT = 8080
 ADDR = (IP, PORT)
 
 SIZE = 1024

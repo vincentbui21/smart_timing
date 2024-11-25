@@ -1,6 +1,7 @@
 import socket
 import threading
 import random
+import ngrok
 
 # IP = socket.gethostbyname(socket.gethostname())
 # IP = '10.214.33.15'
@@ -10,9 +11,8 @@ ADDR = (IP, PORT)
 SIZE = 1024
 FORMAT = "utf-8"
 DISCONNECT_MSG = "!DISCONNECT"
-CURR_CONN = 0
-CONN_LIST = {}
 temp :list[socket.socket] = []
+CONN_LIST = {}
 
 def handle_client(conn:socket.socket) -> None:
     connected = True
@@ -38,12 +38,14 @@ def start(max_conn=2):
     """ Open a socket connection, return that connection.
     The 'max_conn' parameter is by default 2. It is the number of connection the server will listen to.
     """
-    global CURR_CONN
+    CURR_CONN = 0
     print("[STARTING] Server is starting...")
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind(ADDR)
     server.listen(5)
     print(f"[LISTENING] Server is listening on {IP}:{PORT}")
+
     while CURR_CONN < max_conn:
         conn, addr = server.accept()
         print(f'New connection from: {addr}')

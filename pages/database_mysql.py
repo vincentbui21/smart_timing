@@ -3,10 +3,10 @@ import pandas as pd
 import streamlit as st
 
 db = mysql.connector.connect(
-    host = 'sql7.freesqldatabase.com',
-    user = 'sql7743780',
-    password = '52LMyrNQyy',
-    database = 'sql7743780'
+    host = 'localhost',
+    user = 'admin',
+    password = '123',
+    database = 'std'
 )
 
 mycursor = db.cursor()
@@ -81,10 +81,8 @@ if __name__ == '__main__':
     )
     st.divider()
 
-    mycursor.execute(f'SELECT timestamp_id, timestamp FROM timestamphistory LEFT JOIN runners ON timestamphistory.runner_id = runners.id WHERE name ="{option}"')
+    mycursor.execute(f'SELECT timestamp FROM timestamphistory LEFT JOIN runners ON timestamphistory.runner_id = runners.id WHERE name ="{option}"')
     result = mycursor.fetchall()
     pf = pd.DataFrame(result)
-    pf.columns = ['Timestamp ID','Timestamp']
+    pf.columns = ['Timestamp']
     st.dataframe(pf, hide_index=True, height=500)
-
-    st.area_chart(pf, x='Timestamp ID', y='Timestamp')

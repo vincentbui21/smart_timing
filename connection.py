@@ -1,7 +1,6 @@
 import socket
 import threading
 import random
-import ngrok
 
 # IP = socket.gethostbyname(socket.gethostname())
 # IP = '10.214.33.15'

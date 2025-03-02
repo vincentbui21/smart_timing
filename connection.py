@@ -2,8 +2,7 @@ import socket
 import threading
 import random
 
-# IP = socket.gethostbyname(socket.gethostname())
-# IP = '10.214.33.15'
+#---------Set up global parameter
 IP = 'localhost'
 PORT = 8080
 ADDR = (IP, PORT)
@@ -13,10 +12,11 @@ DISCONNECT_MSG = "!DISCONNECT"
 temp :list[socket.socket] = []
 CONN_LIST = {}
 
-def handle_client(conn:socket.socket) -> None:
+def handle_client(value) -> None:
+    conn , message = value
     connected = True
     while connected:
-        msg = 'Start'
+        msg = message
         conn.send(msg.encode(FORMAT))
 
         msg = conn.recv(SIZE).decode(FORMAT)

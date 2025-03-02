@@ -23,9 +23,9 @@ def main():
         
         if msg == DISCONNECT_MSG:
             connected = False
-        elif msg == 'Start':
+        elif msg == 'Left' or msg =='Right':
             msg = input("> ")
             client.send(msg.encode(FORMAT))
-
+        
 if __name__ == "__main__":
     main()

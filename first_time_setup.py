@@ -5,6 +5,7 @@ MYSQL_PASSWORD = "123"
 MYSQL_DATABASE = "std"
 MYSQL_ROOT_PASSWORD = "admin"  # Change this if needed
 
+
 def install_mysql():
     """Installs MySQL Server & Client (for Raspberry Pi)"""
     print("🚀 Installing MySQL Server & Client...")
@@ -12,10 +13,11 @@ def install_mysql():
     os.system("sudo systemctl start mysql && sudo systemctl enable mysql")
     print("✅ MySQL installation complete!")
 
+
 def setup_mysql():
     """Sets up MySQL: root password, database, and user 'admin'."""
     print("🔧 Setting up MySQL database and user...")
-    
+
     setup_commands = f"""
     sudo mysql -u root -e "
     SET PASSWORD FOR 'root'@'localhost' = PASSWORD('{MYSQL_ROOT_PASSWORD}');
@@ -32,6 +34,7 @@ def setup_mysql():
     """
     os.system(setup_commands)
     print("✅ MySQL database and user setup complete!")
+
 
 def setup_tables():
     """Creates tables and inserts initial data"""
@@ -74,12 +77,14 @@ def setup_tables():
     os.system(table_commands)
     print("✅ Tables and initial data setup complete!")
 
+
 def main():
     """Runs the full setup process"""
     install_mysql()
     setup_mysql()
     setup_tables()
     print("🚀 First-time setup complete! MySQL is ready to use.")
+
 
 if __name__ == "__main__":
     main()

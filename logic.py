@@ -16,7 +16,7 @@ def main_logic(
     """
     This functions randomly suffle the list of all the connections made, then send the command to the client and wait for data return before moving on the the next client
     """
-    print("Main logic is running!")
+    # print("Main logic is running!")
     temp = conn_list
 
     if sequence_method == "Randomly":
@@ -28,7 +28,6 @@ def main_logic(
         each_conn: socket.socket
         for each_conn in temp:
             try:
-                print(each_conn)
                 connection.handle_client(each_conn)
                 pause_queue.append(True)
             except (ConnectionResetError, ConnectionAbortedError, ConnectionError):

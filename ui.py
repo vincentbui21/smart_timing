@@ -112,16 +112,16 @@ def Choose_sequence(num_con):
                 st.write(f"Cone {i+1}")
                 col1, col2 = st.columns(2)
                 col1.button(
-                    label="Left",
-                    key=f"Left_{i}",
+                    label="Green",
+                    key=f"Green{i}",
                     on_click=update_sequence,
-                    args=(f"Left_{i}",),
+                    args=(f"Green_{i}",),
                 )
                 col2.button(
-                    label="Right",
-                    key=f"Right_{i}",
+                    label="Blue",
+                    key=f"Blue_{i}",
                     on_click=update_sequence,
-                    args=(f"Right_{i}",),
+                    args=(f"Blue_{i}",),
                 )
 
             st.divider()

@@ -3,7 +3,7 @@ import threading
 import random
 
 # ---------Set up global parameter
-IP = "localhost"
+IP = "192.168.0.10"
 PORT = 8080
 ADDR = (IP, PORT)
 SIZE = 1024
@@ -16,14 +16,16 @@ CONN_LIST = {}
 def handle_client(value) -> None:
     conn, message = value
     connected = True
+    msg = message
+    conn.send(msg.encode(FORMAT))
     while connected:
-        msg = message
-        conn.send(msg.encode(FORMAT))
 
         msg = conn.recv(SIZE).decode(FORMAT)
         if msg == "True":
-            print(f"From client: {msg}")
             msg = "Stop"
+            print(f"From client: {msg}")
+            print('Stop message sent')
+            print('-----')
             conn.send(msg.encode(FORMAT))
             connected = False
         else:
@@ -52,7 +54,12 @@ def start(max_conn=2):
         conn, addr = server.accept()
         print(f"New connection from: {addr}")
         CURR_CONN += 1
-        CONN_LIST.update({CURR_CONN: conn})
+        CONN_LIST.update({CURR_CONN: (conn, "Right")})
+        # CONN_LIST.update({CURR_CONN: conn})
+
+
+        conn.send(str(CURR_CONN).encode(FORMAT))
+
         yield {CURR_CONN: conn}
     # return CONN_LIST
 
@@ -72,7 +79,7 @@ def main(stop_event: threading.Event = None) -> None:
 
 
 if __name__ == "__main__":
-    a = start()
+    a = start(1)
     next(a)
     while True:
         main()

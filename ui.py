@@ -89,7 +89,7 @@ def Choose_sequence(num_con):
                 for index, element in enumerate(st.session_state.sequence):
                     if element == None:
                         continue
-                    print(f"Cone {index+1}: {element}")
+                    # print(f"Cone {index+1}: {element}")
                 st.toast("The cone sequence will be chosen randomly!")
                 st.session_state.sequence_method = "Randomly"
                 filtered_list = [x for x in st.session_state.sequence if x is not None]
@@ -152,7 +152,7 @@ def Choose_sequence(num_con):
                     for index, element in enumerate(st.session_state.sequence):
                         if element == None:
                             continue
-                        print(f"Cone {index+1}: {element}")
+                        # print(f"Cone {index+1}: {element}")
 
 
 def saving_data(button_placeholder, timestamp: str, runner: int):
@@ -170,7 +170,7 @@ def saving_data(button_placeholder, timestamp: str, runner: int):
 
 def start():
     new_stop_watch.reset()
-    for i in range(3, 0, -1):
+    for i in range(3, 0, -1): #count down 3 second
         title_placeholder.title(f":red[{i}]")
         time.sleep(1)
 
@@ -187,6 +187,10 @@ def start():
     )
     logic_thread.start()
 
+    new_stop_watch.reset()
+    new_stop_watch.start() #Start the stop watch thread
+
+
     while not stop_event.is_set():
         try:
             if pause_queue.pop():
@@ -199,13 +203,15 @@ def start():
         except IndexError:
             pass
 
-        msecond, second, minute, hour = new_stop_watch.run(string_format=False)
+        msecond, second, minute, hour = new_stop_watch.get_current_time_stamp(string_format=False)
         title_placeholder.title(f"{hour:02} : {minute:02} : {second:02} : {msecond:02}")
+        time.sleep(0.01)
 
     msecond, second, minute, hour = new_stop_watch.get_current_time_stamp(
         string_format=False
     )
     stop_holder.subheader(f"{hour:02} : {minute:02} : {second:02} : {msecond:02}")
+    new_stop_watch.stop() #Stop the stop watch thread
 
 
 # ---------------main UI code ---------------------

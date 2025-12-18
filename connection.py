@@ -3,7 +3,7 @@ import threading
 import random
 
 # ---------Set up global parameter
-IP = "192.168.0.10"
+IP = "192.168.0.100"
 PORT = 8080
 ADDR = (IP, PORT)
 SIZE = 1024

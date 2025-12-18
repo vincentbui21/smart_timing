@@ -85,7 +85,7 @@ def Choose_sequence(num_con):
         with col1:
             if st.button("Choose the sequence randomly!"):
                 for i in range(num_con):
-                    st.session_state.sequence[i] = random.choice(["Left", "Right"])
+                    st.session_state.sequence[i] = random.choice(["Blue", "Green"])
                 for index, element in enumerate(st.session_state.sequence):
                     if element == None:
                         continue
